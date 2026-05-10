@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AI Chatbot</title>
+
+    <style>
+
+        body{
+            background:#0f0f0f;
+            color:white;
+            font-family:Arial;
+            text-align:center;
+        }
+
+        .chat-container{
+            width:600px;
+            margin:auto;
+            margin-top:40px;
+            background:#1f1f1f;
+            padding:20px;
+            border-radius:20px;
+
+            box-shadow:0 0 20px rgba(0,255,136,0.3);
+        }
+
+        h1{
+            color:#00ff88;
+        }
+
+        #chat-box{
+            height:450px;
+            overflow-y:auto;
+            background:#2c2c2c;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:20px;
+            text-align:left;
+        }
+
+        .user{
+            background:#00cc66;
+            color:white;
+            padding:10px;
+            border-radius:10px;
+            margin:10px;
+        }
+
+        .bot{
+            background:#444;
+            color:white;
+            padding:10px;
+            border-radius:10px;
+            margin:10px;
+        }
+
+        input{
+            width:70%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            background:#2c2c2c;
+            color:white;
+        }
+
+        button{
+            padding:12px 20px;
+            border:none;
+            border-radius:10px;
+            background:#00ff88;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#00cc66;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <h1>AI Health Chatbot 🤖</h1>
+
+    <div id="chat-box"></div>
+
+    <input type="text"
+           id="message"
+           placeholder="Ask health questions...">
+
+    <button onclick="sendMessage()">
+        Send
+    </button>
+
+</div>
+
+<script>
+
+async function sendMessage(){
+
+    let messageInput = document.getElementById("message");
+
+    let message = messageInput.value;
+
+    if(message.trim() === ""){
+        return;
+    }
+
+    let chatBox = document.getElementById("chat-box");
+
+    // USER MESSAGE
+    chatBox.innerHTML += `
+        <div class="user">
+            <strong>You:</strong><br>
+            ${message}
+        </div>
+    `;
+
+    // CLEAR INPUT
+    messageInput.value = "";
+
+    // SEND TO FLASK
+    let formData = new FormData();
+
+    formData.append("message", message);
+
+    try{
+
+        let response = await fetch("/ask", {
+            method: "POST",
+            body: formData
+        });
+
+        let data = await response.json();
+
+        // BOT RESPONSE
+        chatBox.innerHTML += `
+            <div class="bot">
+                <strong>AI:</strong><br>
+                ${data.reply}
+            </div>
+        `;
+
+        // AUTO SCROLL
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    }
+    catch(error){
+
+        chatBox.innerHTML += `
+            <div class="bot">
+                Error getting AI response.
+            </div>
+        `;
+    }
+}
+
+</script>
+
+</body>
+</html>

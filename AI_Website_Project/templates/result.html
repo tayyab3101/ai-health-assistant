@@ -1,0 +1,165 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Result</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AI Health Report 🤖</h1>
+
+    <h2>Hello {{ name }}</h2>
+
+    <p><strong>BMI:</strong> {{ bmi }}</p>
+
+    <p><strong>Category:</strong> {{ category }}</p>
+
+    <p><strong>AI Suggestion:</strong> {{ suggestion }}</p>
+
+    <hr>
+
+    <p><strong>Goal:</strong> {{ goal }}</p>
+
+    <p><strong>Allergy:</strong> {{ allergy }}</p>
+
+    <hr>
+
+    <h2>AI Food Detection 🍔</h2>
+
+    <p><strong>Detected Food:</strong> {{ food_name }}</p>
+
+    <p><strong>Estimated Calories:</strong> {{ calories }} kcal</p>
+
+    <br>
+
+    <a href="/">⬅ Go Back</a>
+
+</div>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Health Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+    <h1>🧠 AI Health Dashboard</h1>
+
+    <div class="card">
+        <h2>User Information</h2>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Gender:</strong> {{ gender }}</p>
+        <p><strong>Age:</strong> {{ age }}</p>
+        <p><strong>Goal:</strong> {{ goal }}</p>
+        <p><strong>Allergy:</strong> {{ allergy }}</p>
+    </div>
+
+    <div class="card">
+        <h2>BMI Analysis</h2>
+        <h3 style="font-size: 2rem; color: #00ffcc;">{{ bmi }}</h3>
+        <p><strong>Category:</strong> {{ category }}</p>
+
+        <div class="progress-container" style="background: #444; border-radius: 10px; height: 20px; width: 100%; margin: 10px 0;">
+            <div class="progress-bar" 
+                 style="width: {{ (bmi / 40) * 100 if bmi < 40 else 100 }}%; background: #00ffcc; height: 100%; border-radius: 10px; transition: width 1s ease-in-out;">
+            </div>
+        </div>
+        <p>{{ suggestion }}</p>
+    </div>
+
+    <div class="card">
+        <h2>AI Health Score</h2>
+        {% if category == "Underweight" %}
+            <h3 style="color: #ffcc00;">60 / 100</h3>
+        {% elif category == "Normal" %}
+            <h3 style="color: #00ff99;">95 / 100</h3>
+        {% else %}
+            <h3 style="color: #ff4d4d;">70 / 100</h3>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🍔 AI Food Detection</h2>
+        <p><strong>Detected Food:</strong> {{ food_name }}</p>
+        <p><strong>Calories:</strong> {{ calories }} kcal</p>
+    </div>
+
+    <div class="card">
+        <h2>🍽 Recommended Diet Plan</h2>
+        <ul>
+        {% if category == "Underweight" %}
+            <li>🥛 Full Cream Milk</li>
+            <li>🍌 Banana & Peanut Butter</li>
+            <li>🍗 Protein-Rich Chicken</li>
+            <li>🥜 Mixed Dry Fruits</li>
+        {% elif category == "Normal" %}
+            <li>🥗 Fresh Green Salad</li>
+            <li>🍎 Seasonal Fruits</li>
+            <li>🍚 Brown Rice</li>
+            <li>🥩 Lean Protein Sources</li>
+        {% else %}
+            <li>🥦 Steamed Vegetables</li>
+            <li>🍵 Organic Green Tea</li>
+            <li>🍗 Baked/Grilled Chicken</li>
+            <li>🥗 Fiber-Rich Low Fat Foods</li>
+        {% endif %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>💡 AI Health Tips</h2>
+        <ul>
+            <li>💧 Drink 8+ glasses of water</li>
+            <li>🏃 Exercise for 30 minutes</li>
+            <li>😴 Sleep 7-8 hours</li>
+            {% if category == "Overweight" %}
+                <li>🚫 Avoid sugary drinks and fast food</li>
+            {% elif category == "Underweight" %}
+                <li>🍳 Eat more protein-heavy snacks</li>
+            {% else %}
+                <li>🍏 Keep up the balanced diet!</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- <div class="button-area">
+        <a href="/" class="btn">🔙 Back</a>
+        <a href="/chatbot" class="btn">🤖 Open AI Chatbot</a>
+    </div> -->
+    <div class="button-area">
+
+    <a href="/" class="btn">🔙 Back</a>
+
+    <a href="/chatbot" class="btn">🤖 Open AI Chatbot</a>
+
+    <!-- ✅ NEW: PDF DOWNLOAD BUTTON -->
+    <a class="btn"
+       href="/download-report?name={{name}}&gender={{gender}}&age={{age}}&bmi={{bmi}}&category={{category}}&suggestion={{suggestion}}&food={{food_name}}&calories={{calories}}">
+        📄 Download PDF Report
+    </a>
+
+</div>
+<div class="card">
+    <h2>📄 Export Report</h2>
+    <p>You can download a complete AI-generated health report in PDF format including BMI, calories, and recommendations.</p>
+
+    <a class="btn"
+       href="/download-report?name={{name}}&gender={{gender}}&age={{age}}&bmi={{bmi}}&category={{category}}&suggestion={{suggestion}}&food={{food_name}}&calories={{calories}}">
+        Download Now
+    </a>
+</div>
+</div>
+
+</body>
+</html>

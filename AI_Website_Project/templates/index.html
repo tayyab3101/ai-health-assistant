@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Smart Health Assistant</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+            color: white;
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 25px;
+            background: #111;
+            position: sticky;
+            top: 0;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        /* MAIN WRAPPER */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            gap: 40px;
+        }
+
+        /* CARD STYLE */
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,255,136,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        /* INPUT FIX */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            box-sizing: border-box; /* 🔥 IMPORTANT FIX */
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #00ff88;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00cc66;
+        }
+
+        /* CHAT BOX */
+        .chat-box {
+            height: 250px;
+            overflow-y: auto;
+            background: #ffffff;
+            color: black;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .chat-input {
+            width: 75%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .send-btn {
+            width: 23%;
+            padding: 10px;
+            background: #00ff88;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .chat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+    <h2>AI Health Assistant</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/chatbot">Chatbot</a>
+    </div>
+</nav>
+
+<div class="wrapper">
+
+    <!-- FORM CARD -->
+    <div class="card">
+
+        <h2>Health Analyzer 🧠</h2>
+
+        <form action="/result" method="POST" enctype="multipart/form-data">
+
+            <input type="text" name="name" placeholder="Enter Name" required>
+            <input type="text" name="gender" placeholder="Gender" required>
+            <input type="number" name="age" placeholder="Age" required>
+            <input type="text" name="height" placeholder="Height (meters)" required>
+            <input type="text" name="weight" placeholder="Weight (kg)" required>
+
+            <select name="goal">
+                <option value="gain">Gain Weight</option>
+                <option value="lose">Lose Weight</option>
+                <option value="maintain">Maintain</option>
+            </select>
+
+            <input type="text" name="allergy" placeholder="Allergy">
+
+            <input type="file" name="food_image" required>
+
+            <button type="submit">Analyze</button>
+
+        </form>
+
+    </div>
+
+    <!-- CHAT CARD -->
+    <div class="card">
+
+        <h2>AI Chat Assistant 🤖</h2>
+
+        <div class="chat-row">
+            <input id="msg" class="chat-input" placeholder="Ask health question...">
+            <button class="send-btn" onclick="send()">Send</button>
+        </div>
+
+        <div id="chat" class="chat-box"></div>
+
+    </div>
+
+</div>
+
+<script>
+function send() {
+
+    let msg = document.getElementById("msg").value;
+
+    if (msg.trim() === "") return;
+
+    document.getElementById("chat").innerHTML +=
+        "<p><b>You:</b> " + msg + "</p>";
+
+    fetch("/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "message=" + encodeURIComponent(msg)
+    })
+
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById("chat").innerHTML +=
+            "<p style='color:green;'><b>AI:</b> " + data.reply + "</p><hr>";
+
+    });
+
+    document.getElementById("msg").value = "";
+}
+</script>
+
+</body>
+</html>
